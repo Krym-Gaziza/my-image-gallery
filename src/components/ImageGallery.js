@@ -1,12 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './index.css';
 
+const preloadImage = (src) => {
+  const link = document.createElement('link');
+  link.rel = 'preload';
+  link.as = 'image';
+  link.href = src;
+  document.head.appendChild(link);
+};
+
 function LazyImage({ src, alt, fullSrc, onLoad }) {
   const [isVisible, setIsVisible] = useState(false);
   const [loadTime, setLoadTime] = useState(0);
   const imageRef = useRef(null);
 
   useEffect(() => {
+    const currentImageRef = imageRef.current; 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -15,14 +24,13 @@ function LazyImage({ src, alt, fullSrc, onLoad }) {
         }
       });
     });
-
-    if (imageRef.current) {
-      observer.observe(imageRef.current);
+  
+    if (currentImageRef) {
+      observer.observe(currentImageRef);
     }
-
     return () => {
-      if (imageRef.current) {
-        observer.unobserve(imageRef.current);
+      if (currentImageRef) {
+        observer.unobserve(currentImageRef); 
       }
     };
   }, []);
@@ -39,20 +47,23 @@ function LazyImage({ src, alt, fullSrc, onLoad }) {
   };
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div className="lazy-image-container">
       <img
         ref={imageRef}
         src={isVisible ? src : ''}
         alt={alt}
         onClick={handleClick}
         onLoad={handleLoad}
-        style={{ cursor: 'pointer' }}
+        className="lazy-image"
       />
-      <div style={{ position: 'absolute', bottom: 0, right: 0, background: 'rgba(255, 255, 255, 0.8)', padding: '2px 5px' }}>
-      {loadTime > 0 && `Время загрузки: ${loadTime.toFixed(2)} мс`}
-      </div>
+      {loadTime > 0 && (
+        <div className="load-time-indicator">
+          Время загрузки: <strong>{loadTime.toFixed(2)} мс</strong>
+        </div>
+      )}
     </div>
   );
+  
 }
 
 function App() {
@@ -69,6 +80,9 @@ function App() {
       const response = await fetch('https://api.unsplash.com/photos/?client_id=2GZF2FZR2G8dgzomDXRjiHMOOjaYj_LQf4_5EKzw6vo');
       const data = await response.json();
       setImages(data);
+
+
+      data.slice(0, 5).forEach(image => preloadImage(image.urls.thumb));
     } catch (error) {
       console.error('Error fetching images:', error);
     }
@@ -82,7 +96,6 @@ function App() {
 
   return (
     <div className="App">
-      <PerformanceAnalysis pageLoadTime={pageLoadTime} />
       <div className="image-gallery">
         {Array.isArray(images) && images.map(image => (
           <LazyImage
@@ -98,13 +111,5 @@ function App() {
   );
 }
 
-function PerformanceAnalysis({ pageLoadTime }) {
-  return (
-    <div className="performance-analysis">
-      <h2>Performance Analysis</h2>
-      <p>Page Load Time: {pageLoadTime.toFixed(2)} ms</p>
-    </div>
-  );
-}
 
 export default App;

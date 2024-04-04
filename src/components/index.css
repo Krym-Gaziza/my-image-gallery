@@ -1,15 +1,84 @@
-.app {
-    text-align: center;
-  }
-  
-  .image-gallery {
+.App {
+  text-align: center;
+  background-color: #f0f0f0; /* Светлый фон для приложения */
+}
+
+header {
+  padding: 20px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.performance-analysis {
+  font-family: 'Arial', sans-serif; /* Изменение шрифта */
+  color: #333; /* Изменение цвета текста */
+  padding: 20px;
+  background-color: #fff; /* Фоновый цвет */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Добавление тени */
+  border-radius: 8px; /* Скругление углов */
+  margin: 20px auto; /* Центрирование по горизонтали */
+  max-width: 400px; /* Максимальная ширина блока анализа производительности */
+}
+
+.performance-analysis h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.performance-analysis p {
+  margin: 10px 0;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.image-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Увеличиваем минимальный размер */
     gap: 20px;
-  }
-  
-  .image-gallery img {
-    max-width: 100%;
-    height: auto;
-  }
-  
+    padding: 20px; /* Добавляем отступы вокруг галереи */
+    margin: auto; /* Центрируем галерею */
+    max-width: 1200px; /* Максимальная ширина галереи */
+}
+
+.image-gallery img {
+  width: 100%; /* Ширина занимает всю доступную область */
+  height: auto; /* Высота автоматически рассчитывается для сохранения пропорций */
+  max-height: 200px; /* Максимальная высота изображения */
+  margin: 0 auto; /* Центрирование изображения внутри родительского контейнера */
+  display: block; /* Изображение является блочным элементом */
+}
+
+/* Добавляем поля по бокам для изображений с более краткими пропорциями */
+.image-gallery img.short {
+  padding: 0 50px; /* Добавляем поля по 50 пикселей с каждой стороны */
+}
+
+
+.image-gallery img:hover {
+    transform: scale(1.05); /* Увеличение изображения при наведении */
+}
+ 
+
+.lazy-image-container {
+  position: relative;
+}
+
+.lazy-image {
+  cursor: pointer;
+}
+
+.load-time-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 5px 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: Arial;
+  font-size: 12px;
+  color: #333;
+}
